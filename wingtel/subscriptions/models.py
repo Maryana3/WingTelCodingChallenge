@@ -8,7 +8,7 @@ from model_utils import Choices
 from wingtel.plans.models import Plan
 
 
-class SprintSubscription(models.Model):
+class Subscription(models.Model):
     """Represents a subscription with Sprint for a user and a single device"""
     STATUS = Choices(
         ('new', 'New'),
@@ -16,11 +16,12 @@ class SprintSubscription(models.Model):
         ('suspended', 'Suspended'),
         ('expired', 'Expired'),
     )
-    ONE_KILOBYTE_PRICE = Decimal('0.0015')
-    ONE_SECOND_PRICE = Decimal('0.0015')
+    ONE_KILOBYTE_PRICE = models.DecimalField(max_digits=20, decimal_places=10, default='0.0015')
+    ONE_SECOND_PRICE = models.DecimalField(max_digits=20, decimal_places=10, default='0.0015')
 
     # Owning user
     user = models.ForeignKey(User, on_delete=models.PROTECT)
+    subscription_type = models.CharField(max_length=20,default="")
 
     plan = models.ForeignKey(Plan, null=True, on_delete=models.PROTECT)
     status = models.CharField(max_length=10, choices=STATUS, default=STATUS.new)

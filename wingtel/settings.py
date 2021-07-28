@@ -37,11 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'wingtel.att_subscriptions.apps.AttSubscriptionsConfig',
     'wingtel.plans.apps.PlansConfig',
     'wingtel.purchases.apps.PurchasesConfig',
-    'wingtel.sprint_subscriptions.apps.SprintSubscriptionsConfig',
-    'wingtel.usage.apps.UsageConfig'
+    'wingtel.usage.apps.UsageConfig',
+    'wingtel.subscriptions.apps.SubscriptionsConfig',
 ]
 
 MIDDLEWARE = [
@@ -81,9 +80,9 @@ WSGI_APPLICATION = 'wingtel.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'wingtel',
+        'NAME': 'win12',
         'USER': 'postgres',
-        'PASSWORD': '',
+        'PASSWORD': '1234',
         'HOST': '127.0.0.1',
         'PORT': '5432',
         'CONN_MAX_AGE': 3600,
