@@ -23,6 +23,8 @@ from wingtel.att_subscriptions.views import ATTSubscriptionViewSet
 from wingtel.plans.views import PlanViewSet
 from wingtel.purchases.views import PurchaseViewSet
 from wingtel.sprint_subscriptions.views import SprintSubscriptionViewSet
+from wingtel.usage.views import SubscriptionsExceedingUsagePriceLimitViewSet,\
+    UsageMetricsBySubscriptionUsageTypeViewSet
 
 router = routers.DefaultRouter()
 
@@ -30,6 +32,11 @@ router.register(r'att_subscriptions', ATTSubscriptionViewSet)
 router.register(r'plans', PlanViewSet)
 router.register(r'purchases', PurchaseViewSet)
 router.register(r'sprint_subscriptions', SprintSubscriptionViewSet)
+router.register(r'usage_subscriptions_exceeding_usage_price_limit',
+                SubscriptionsExceedingUsagePriceLimitViewSet)
+router.register(r'usage_metrics_by_subscription_usage_type',
+                UsageMetricsBySubscriptionUsageTypeViewSet,
+                base_name='usage_metrics_by_subscription_usage_type')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
