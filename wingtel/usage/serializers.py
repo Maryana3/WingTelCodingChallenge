@@ -11,7 +11,7 @@ class SubscriptionsPriceLimitSerializer(serializers.ModelSerializer):
         try:
             price_limit = float(self.context['request'].query_params.get("price_limit", None))
             price_limit = decimal.Decimal(price_limit)
-            subscriptions = obj.subscriptions
+            subscriptions = obj.subscriptions.all()
             print("subscriptions ",subscriptions)
             for subscription in subscriptions:
                 if price_limit and subscription.plan.price:

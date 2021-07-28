@@ -19,12 +19,39 @@ class UsageMetricsBySubscriptionUsageTypeViewSet(viewsets.ViewSet):
         start_date = self.request.query_params.get("start_date", None)
         end_date = self.request.query_params.get("end_date", None)
         usage_type = self.request.query_params.get("usage_type", None)
-        if subscription_id:
-            queryset = queryset.filter(subscription_id__in=subscription_id)
         if usage_type:
+            print(queryset.count())
             queryset = queryset.filter(usage_type=usage_type)
+            print(queryset.count())
+        if subscription_id:
+            print(queryset.count())
+            queryset = queryset.filter(subscriptions__id=subscription_id)
+            print(queryset.count())
         if start_date and end_date:
-            queryset = queryset.filter(usage_date__range=[start_date, end_date])
+            print(queryset.count())
+            queryset = queryset.filter(
+                usage_date__range=[start_date, end_date])
+            print(queryset.count())
+
+        att_subscription__count = queryset.filter(
+            subscriptions__subscription_type="att").count()
+        print("att_subscription__count ",att_subscription__count)
+        sprint_subscription__count = queryset.filter(
+            subscriptions__subscription_type="sprint").count()
+        print("sprint_subscription__count ", sprint_subscription__count)
+        att_subscription__plan__price_sum = queryset.filter(
+            subscriptions__subscription_type="att",
+        ).annotate(
+            subscriptions__plan__price=Sum("subscriptions__plan__price"),
+        )
+        print("att_subscription__plan__price_sum ",att_subscription__plan__price_sum)
+        sprint_subscription__plan__price_sum = queryset.filter(
+            subscriptions__subscription_type="sprint",
+        ).annotate(
+            subscriptions__plan__price=Sum("subscriptions__plan__price"),
+        )
+        print("sprint_subscription__plan__price_sum ",sprint_subscription__plan__price_sum)
+        """
         result = queryset.aggregate(subscription_count=Count("subscription__id"),
                                     total_price_usage=Sum("subscription__plan__price"),
                                     att_subscription__count=Count(Case(When(subscriptions__subscription_type="att",
@@ -40,6 +67,7 @@ class UsageMetricsBySubscriptionUsageTypeViewSet(viewsets.ViewSet):
                                     sprint_subscription__plan__price_sum=Sum(Case(When(subscriptions__subscription_type="sprint",
                                                                             then=subscriptions___plan__price),
                                                                        output_field=IntegerField()))))
+        """
         result["subscription_id"] = [subscription_id] if subscription_id else []
 
         return Response(result)
@@ -98,9 +126,7 @@ class SubscriptionsExceedingUsagePriceLimitViewSet(viewsets.ModelViewSet):
                     )
                     print("obj",obj.subscriptions)
                     obj.subscriptions.add(Subscription.objects.get(id=item_["subscription"]))
-                    print("obj",obj.subscriptions)
                     obj.save()
-                    print("obj",obj.subscriptions)
                 if item["model"] == "usage.voiceusagerecord":
                     obj = UsageRecord.objects.create(
                         price=item_["price"],
@@ -108,13 +134,10 @@ class SubscriptionsExceedingUsagePriceLimitViewSet(viewsets.ModelViewSet):
                         usage_type="voice",
                         used_metric_value=item_["seconds_used"]
                     )
-                    print("obj",obj.subscriptions)
-                    print(Subscription.objects.get(id=item_["subscription"]))
                     obj.subscriptions.add(Subscription.objects.get(id=item_["subscription"]))
-                    print("obj",obj.subscriptions)
                     obj.save()
-                    print("obj",obj.subscriptions)
         except Exception as e:
             print("Exception ",e)
         """
+
 
